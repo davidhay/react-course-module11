@@ -1,7 +1,6 @@
 import React, { useReducer } from "react";
 //reducer is more complex that useState - state can be objects
 
-import ReactDOM from "react-dom";
 import CartContext from "./cart-context";
 
 //all items that need acess to the cart can be wrapped by this component.
@@ -11,28 +10,35 @@ const defaultCartState = {
   totalAmount: 0,
 };
 const cartReducer = (state, action) => {
-  if (action === "ADD") {
+  if (action.type === "ADD") {
     //add to new array
     const updatedItems = state.items.concat(action.item);
-    const updateTotalAmt =
+    const updatedTotalAmt =
       state.totalAmount + action.item.price * action.item.amount;
-    return {
+    const result = {
       items: updatedItems,
-      totalAmoumt: updatedTotalAmt,
+      totalAmount: updatedTotalAmt,
     };
+    console.log("new state is", result);
+    return result;
   }
   return defaultCartState;
 };
 const CartProvider = (props) => {
-  const [cartState, dispatchCartAction] = useReducer(reducer, defaultCartState);
+  const [cartState, dispatchCartAction] = useReducer(
+    cartReducer,
+    defaultCartState
+  );
 
   const addItemToCart = (item) => {
+    console.log("adding item", item);
     dispatchCartAction({
       type: "ADD",
       item: item,
     });
   };
   const removeItemFromCart = (id) => {
+    console.log("removing item id", id);
     dispatchCartAction({
       type: "REMOVE",
       id: id,
